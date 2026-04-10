@@ -109,4 +109,18 @@ RadioMapSeer
 
 34 directories
 ```
-**Important Directories**: `gain`, `png`, this two directories have the images we need. `png` has the model inputs and `gain` has the model targets.
+**Important Directories**: <span className="red-text">`gain`, `png`</span>, this two directories have the images we need. `png` has the model inputs and `gain` has the model targets.
+- `png/antennas`: transmitter map
+- `png/buildings_complete`: complete building map
+- `png/buildings_difference[number]`: building map with **[number]** problematic points, which can be used to simulate real-world measurement errors. (This was not used in the original repository training.) 
+- `png/buildings_removed[number]`: building map with **[number]** removed points, which can be used to simulate real-world measurement errors. (The original repository used `missing`)
+- `png/cars`: car map
+- `gain/[cars][method]`: radio map, calculated using **[method]**, **[with/without]** cars, is used as targets/actually measured data/ground truth.
+
+## DataLoader
+Related Fuctions are in 'lib/loaders.py'
+
+### Tips
+- A building map may correspond to multiple transmitters, and each transmitter has its own independent "target map/gain map/ground truth radio map". In IRT4, only a maximum of 2 transmitters are supported, while other types support up to 80 receivers.
+- We can randomly **sample** the ground-truth values ​​of a few points as input to aid training. The relevant dataloader functions are 'RadioUNet_s' and 'RadioUNet_s_sprseIRT4'.
+- We can only calculate the **loss** at a few points to simulate a real-world scenario where we only know the ground-truth values ​​of partial points. The relevant dataloader are "RadioUNet_c_sprseIRT4" and "RadioUNet_s_sprseIRT4".
