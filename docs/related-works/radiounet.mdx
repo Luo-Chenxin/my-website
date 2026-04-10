@@ -1,0 +1,112 @@
+import SvgAdjuster from '@site/src/components/SvgAdjuster';
+import Arch from '@site/static/img/radiounet/radiounet_arch.svg';
+import Layer00_convolutional_block from '@site/static/img/radiounet/block00.svg';
+import Layer0_convolutional_block from '@site/static/img/radiounet/block0.svg';
+import WLayerUp0_convolutional_block from '@site/static/img/radiounet/blockWup0.svg';
+import LayerUp000_convolutional_block from '@site/static/img/radiounet/blockup000.svg';
+import KPCalc from '@site/src/components/KernelPaddingCalculator';
+
+# RadioUnet
+- [Paper link](https://ieeexplore.ieee.org/abstract/document/9354041)
+- [Original repository link](https://github.com/RonLevie/RadioUNet)
+
+## Architecture
+RadioUnet exhibits two U-shaped structures, as shown below
+
+<SvgAdjuster initialZoom={100} initialX={20} initialY={16} title="Architecture" height={600}>
+  <Arch />
+</SvgAdjuster>
+
+### Main Convolutional Blocks
+
+The model uses several different convolutional blocks; three representative blocks are given as examples here.
+
+We assume the input channels are 2 (build + transmitter).
+
+####  Maintain Resolution, Increase Channels
+**Representative layer**: layer00, layer10, layer20, Wlayer00, Wlayer10, Wlayer20
+
+<SvgAdjuster initialZoom={70} initialX={-119} initialY={8} title="layer00" height={300}>
+  <Layer00_convolutional_block />
+</SvgAdjuster>
+
+####  Maintain Resolution, Decrease Channels
+**Representative layer**: conv_up000, conv_up00, conv_up10, conv_up20, Wconv_up000, Wconv_up00, Wconv_up10, Wconv_up20
+
+<SvgAdjuster initialZoom={60} initialX={-39} initialY={39} title="conv_up000" height={300}>
+  <LayerUp000_convolutional_block />
+</SvgAdjuster>
+
+#### Decrease Resolution / Downsampling, Increase Channels
+**Representative layer**: layer0, layer1, layer2, layer3, layer4, layer5, Wlayer0, Wlayer1, Wlayer2, Wlayer3, Wlayer4, Wlayer5
+
+<SvgAdjuster initialZoom={55} initialX={-128} initialY={-9} title="layer0" height={300}>
+  <Layer0_convolutional_block />
+</SvgAdjuster>
+
+#### Increase Resolution / Upsampling, Decrease Channels
+**Representative layer**: conv_up0, conv_up1, conv_up2, conv_up3, conv_up4, conv_up5, Wconv_up0, Wconv_up1, Wconv_up2, Wconv_up3, Wconv_up4, Wconv_up5
+
+<SvgAdjuster initialZoom={65} initialX={-59} initialY={3} title="Wconv_up0" height={300}>
+  <WLayerUp0_convolutional_block />
+</SvgAdjuster>
+
+### Functions Related to Convolution
+- convrelu: Conv2d (Increase Channels) + ReLU + MaxPool2d (Decrease Resolution)
+- convreluT: ConvTranspose2d (Increase Resolution) + ReLU
+We can find this two function in file `lib/modules.py`
+
+#### Parameter Calculation Tool
+When decreasing resolution/downsampling, the resolution is halved using MaxPool, while the convolutional layer maintains its resolution. The following tool can quickly calculate the kernel and padding values ​​of the convolutional layer to ensure that the resolution remains unchanged.
+<KPCalc logic="conv"/>
+
+When Increasing resolution/upsampling, the resolution is halved using ConvolutinalTranspose. The following tool can quickly calculate the kernel and padding values ​​of the convolutional layer to ensure that the resolution doubles.
+<KPCalc logic="convT"/>
+
+## Reproduction Tips
+- The `s.environ["CUDA_VISIBLE_DEVICES"]="0"` label must match the label of the graphics card in the current environment. In a Linux environment, we can use "nvidia-smi" to check the NVIDIA graphics card.
+
+## Ideas
+- Can the optimal solutions for parameters like channels, pooling, and padding be obtained through training?
+
+## RadioMapSeer
+Directory Structure:
+```
+RadioMapSeer
+├── antenna
+├── gain
+│   ├── DPM
+│   ├── IRT2
+│   ├── IRT4
+│   ├── carsDPM
+│   ├── carsIRT2
+│   └── carsIRT4
+├── png
+│   ├── antennas
+│   ├── buildings_complete
+│   ├── buildings_difference1
+│   ├── buildings_difference2
+│   ├── buildings_difference3
+│   ├── buildings_difference4
+│   ├── buildings_removed1
+│   ├── buildings_removed2
+│   ├── buildings_removed3
+│   ├── buildings_removed4
+│   ├── cars
+│   └── roads
+└── polygon
+    ├── buildings_and_cars
+    ├── buildings_complete
+    ├── buildings_difference1
+    ├── buildings_difference2
+    ├── buildings_difference3
+    ├── buildings_difference4
+    ├── buildings_removed1
+    ├── buildings_removed2
+    ├── buildings_removed3
+    ├── buildings_removed4
+    └── roads
+
+34 directories
+```
+**Important Directories**: `gain`, `png`, this two directories have the images we need. `png` has the model inputs and `gain` has the model targets.

@@ -1,0 +1,61 @@
+.calcContainer {
+  margin: 2rem 0;
+  max-width: 400px;
+}
+
+.calcTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.5rem;
+}
+
+.calcTable th, .calcTable td {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  padding: 12px;
+  text-align: center;
+}
+
+.calcTable th {
+  background-color: var(--ifm-color-emphasis-100);
+  font-weight: bold;
+}
+
+.calcTable input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--ifm-color-emphasis-400);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.calcTable input:focus {
+  outline: 2px solid var(--ifm-color-primary);
+  border-color: transparent;
+}
+
+.formulaHint {
+  font-size: 0.85rem;
+  color: var(--ifm-color-emphasis-600);
+  text-align: right;
+}
+
+.messageArea {
+  height: 20px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.errorText {
+  color: #ff4d4f; 
+  font-weight: bold;
+}
+
+.inputError {
+  border-color: #ff4d4f !important;
+  background-color: #fff2f0;
+}
+
+.formulaHint {
+  color: var(--ifm-color-emphasis-600);
+}
