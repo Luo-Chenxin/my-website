@@ -54,6 +54,7 @@ We assume the input channels are 2 (build + transmitter).
 ### Functions Related to Convolution
 - convrelu: Conv2d (Increase Channels) + ReLU + MaxPool2d (Decrease Resolution)
 - convreluT: ConvTranspose2d (Increase Resolution) + ReLU
+
 We can find this two function in file `lib/modules.py`
 
 #### Parameter Calculation Tool
@@ -121,6 +122,6 @@ RadioMapSeer
 Related Fuctions are in 'lib/loaders.py'
 
 ### Tips
-- A building map may correspond to multiple transmitters, and each transmitter has its own independent "target map/gain map/ground truth radio map". In IRT4, only a maximum of 2 transmitters are supported, while other types support up to 80 receivers.
+- A building map may correspond to multiple transmitters, and each transmitter has its own independent <span className="blue-text">target map/gain map/ground truth radio map</span>. In IRT4, only a maximum of 2 transmitters are supported, while other types support up to 80 receivers.
 - We can randomly **sample** the ground-truth values ​​of a few points as input to aid training. The relevant dataloader functions are 'RadioUNet_s' and 'RadioUNet_s_sprseIRT4'.
 - We can only calculate the **loss** at a few points to simulate a real-world scenario where we only know the ground-truth values ​​of partial points. The relevant dataloader are "RadioUNet_c_sprseIRT4" and "RadioUNet_s_sprseIRT4".
