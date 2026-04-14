@@ -67,6 +67,7 @@ When Increasing resolution/upsampling, the resolution is halved using Convolutin
 ## Reproduction Tips
 - The `s.environ["CUDA_VISIBLE_DEVICES"]="0"` label must match the label of the graphics card in the current environment. In a Linux environment, we can use "nvidia-smi" to check the NVIDIA graphics card.
 - Recommend to change `torch.set_default_tensor_type('torch.cuda.FloatTensor')` to `torch.set_default_tensor_type('torch.FloatTensor')` to avoid device incompatibility issues.
+- In the file `/lib/loaders.py`, we need to change `buildings_missing` to `buildings_removed` to match the directory name of the dataset.
 
 ## Ideas
 - Can the optimal solutions for parameters like channels, pooling, and padding be obtained through training?
