@@ -32,7 +32,7 @@ export default function Home(): ReactNode {
         <div className="container padding-vert--xl">
           <div className="row">
             <div className="col col--8 col--offset-2 text--center">
-              <h2 style={{fontSize: '2.5rem', fontWeight: 'bold'}}>About Me</h2>
+              <h2 style={{fontSize: '2.5rem', fontWeight: 'bold'}}>About me</h2>
               <p style={{fontSize: '1.25rem', lineHeight: '1.6', color: 'var(--ifm-color-emphasis-700)'}}>
                 I am a normal radish.
               </p>
