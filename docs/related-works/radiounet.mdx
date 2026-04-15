@@ -67,7 +67,7 @@ When Increasing resolution/upsampling, the resolution is halved using Convolutin
 ## Reproduction Tips
 - The `s.environ["CUDA_VISIBLE_DEVICES"]="0"` label must match the label of the graphics card in the current environment. In a Linux environment, we can use "nvidia-smi" to check the NVIDIA graphics card.
 - Recommend to change `torch.set_default_tensor_type('torch.cuda.FloatTensor')` to `torch.set_default_tensor_type('torch.FloatTensor')` to avoid device incompatibility issues.
-- In the file `/lib/loaders.py`, we need to change `buildings_missing` to `buildings_removed` to match the directory name of the dataset.
+- In the file `/lib/loaders.py`, we need to change `buildings_missing` to `buildings_difference` to match the directory name of the dataset. For details, refer to [`buildings_difference`](#buildings_difference)
 
 ## Ideas
 - Can the optimal solutions for parameters like channels, pooling, and padding be obtained through training?
@@ -115,10 +115,12 @@ RadioMapSeer
 **Important Directories**: <span className="red-text">`gain`, `png`</span>, this two directories have the images we need. `png` has the model inputs and `gain` has the model targets.
 - `png/antennas`: transmitter map
 - `png/buildings_complete`: complete building map
-- `png/buildings_difference[number]`: building map with **[number]** problematic points, which can be used to simulate real-world measurement errors. (This was not used in the original repository training.) 
-- `png/buildings_removed[number]`: building map with **[number]** removed points, which can be used to simulate real-world measurement errors. (The original repository used `missing`)
+<span id="buildings_difference"></span>
+- `png/buildings_difference[number]`: building map with **[number]** missing buildings, which can be used to simulate real-world measurement errors. (Used as `building_missing` in the original repository training.) 
+- `png/buildings_removed[number]`: building map containing only the removed buildings, and the files are matched with the files in the difference directory based on their names. (Not used in the original repository)
 - `png/cars`: car map
 - `gain/[cars][method]`: radio map, calculated using **[method]**, **[with/without]** cars, is used as targets/actually measured data/ground truth.
+- `antenna` and  `polygon`: store the coordinates of the corresponding antenna/building/... in JSON format.
 
 ## DataLoader
 Related Fuctions are in 'lib/loaders.py'
