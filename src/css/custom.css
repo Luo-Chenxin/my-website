@@ -29,5 +29,6 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
-.red-text { color: #ff4d4f; font-weight: 600; }
+.red-text { color: #ff4d4f; }
 .blue-text { color: #1890ff; }
+.todo-red { color: red; font-weight: bold; }

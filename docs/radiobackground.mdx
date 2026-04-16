@@ -1,0 +1,64 @@
+---
+title: Radio Background
+---
+
+## Basic Concepts
+- **Diffraction**: Radio frequnce waves bend around an obstacle.
+- **Scattering**: When an radio frequence wave encounters an obstacle, it will scatter into multiple waves.
+- **Additive Noise**: Noise is introduced to the signal of interest via addition.
+- **Decibel(dB)**: Decibel is a logarithmic unit that expresses the ratio of two physical quantities of the **same** unit. It is often used to measure the relative magnitude of sound intensity or electrical signal power.
+- **Large-scale signal attenuation**: Signal loss during long-distance propagation; large scale means it focuses on the macroscopic changes in signal with distance/terrain...
+- **Wavefront**: <span className="todo-red">TODO</span>
+- **Second Moment**: Usually refer to the average of the squares of a random variable. $E[X^2]$
+    - **Unit Second Moment**: $E[X^2]=1$
+
+## Pathloss
+- It is a quantity that measures the loss of signal strength (reduction in power, or attenuation) between a transmitter and receiver.
+
+<span id="gain_directivity"></span>
+### [Antenna Gain/Directivity](https://en.wikipedia.org/wiki/Directivity)
+- How well the antenna converts input power into radio waves headed in a specified direction.
+- It is the ratio of the radiation intensity in a given direction from the antenna to the radiation intensity averaged over all directions.
+
+### General Pathloss Model
+$$
+P_r(d) = \frac{P_t G_t G_r \lambda^2}{(4\pi)^2d^2L}
+$$
+
+Notation:
+- $d$: distance between the transmitter and receiver (in meters)
+- $G_t$/$G_r$: transmit/receiver gain, related [link](#gain_directivity)
+- $\lambda$: wavelength
+- $P_t$/$P_r$: transmission/received power
+- $L$: system loss factor, which is independent of propagation environment. The system loss factor represents overall attenuation or loss in the actual system hardware, including transmission line, filter, and antennas. Typically $L>1$
+, with $L=1$ as ideal.
+
+### Free Space Pathloss (FSPL)
+According to [General Pathloss Model](#general-pathloss-model), we can set $L$ to 1 to get **Free Space Pathloss (FSPL)**
+$$
+PL_F(d) = 10 \log (P_t/P_r) = -10 \log (\frac{G_t G_r\lambda^2}{(4\pi)^2d^2}) = -20 \log (\frac{\sqrt{G_t G_r} \lambda}{4\pi d})
+$$
+
+## Gaussian Noise
+- When an electrical variation obeys a Gaussian distribution, it is called **Gaussian noise**, or Random Noise.
+- Its mean is 0 and its variance is constant.
+- It can be used to simulate real-word random interference
+
+## Cellular Radio
+In a cellular radio system, the area to be covered is divided up into a number of small areas called cells, with one radio base station positioned to give radio coverage of each cell
+
+- **Frequency Reuse**: two cells that are far apart can use the same frequency without interfering with each other.
+- **Handoff / Handover**: when moving across cells, the base station will switch seamlessly.
+- **Cell Splitting**: when the number of users in a cell is too high, causing the base station to be unable to provide sufficient service, this cell can be divided into several smaller cells with more base stations.
+
+## Signal Noise Ration (SNR)
+
+### Baseband Equivalent Channel Model
+
+<span className="todo-red">TODO</span>
+
+It can also be called "Fading Channel Model" or "Fading Channel with AWGN(Additive White Gaussian Noise)".
+
+$$
+Y = \sqrt{G(x, y)} H X + Z
+$$

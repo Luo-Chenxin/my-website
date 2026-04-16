@@ -2,8 +2,8 @@ import type {ReactNode} from 'react';
 import clsx from 'clsx';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-// import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
+import Link from '@docusaurus/Link';
 
 import styles from './index.module.css';
 
@@ -36,6 +36,30 @@ export default function Home(): ReactNode {
               <p style={{fontSize: '1.25rem', lineHeight: '1.6', color: 'var(--ifm-color-emphasis-700)'}}>
                 I am a normal radish.
               </p>
+            </div>
+            
+            <div className="col col--8 col--offset-2" style={{ marginTop: '2.5rem' }}>
+              <h3 style={{ 
+                textAlign: 'center', 
+                marginBottom: '1.5rem',
+                color: 'var(--ifm-color-primary-darker)' 
+              }}>
+                Todo Lists:
+              </h3>
+                <div className="col col--12 text--center" style={{ 
+                    marginTop: '1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                  <Link to="/docs/radiobackground#basic-concepts" style={{fontSize: '0.9rem', color: 'gray'}}>
+                    1. What is "Wavefront"?
+                  </Link>
+                  <Link to="/docs/radiobackground#baseband-equivalent-channel-model" style={{fontSize: '0.9rem', color: 'gray'}}>
+                    2. Current progress.
+                  </Link>
+                </div>
             </div>
           </div>
         </div>
