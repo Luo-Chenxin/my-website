@@ -8,12 +8,21 @@ title: Radio Background
 - **Additive Noise**: Noise is introduced to the signal of interest via addition.
 - **Decibel(dB)**: Decibel is a logarithmic unit that expresses the ratio of two physical quantities of the **same** unit. It is often used to measure the relative magnitude of sound intensity or electrical signal power.
 - **Large-scale signal attenuation**: Signal loss during long-distance propagation; large scale means it focuses on the macroscopic changes in signal with distance/terrain...
-- **Wavefront**: <span className="todo-red">TODO</span>
+- **Small-scale fading**: Severe fluctuations in received signal strength over extremely short distances (wavelength levels) or over extremely short periods of time.
+    - It originates from the superposition of scattered wavefronts. When a signal is emitted from a base station, it reaches receiver via different paths. Because the length of each path is different, the **phase** of the arriving signal is also different.
+    - **Wavefront**: <span className="todo-red">TODO</span>
 - **Second Moment**: Usually refer to the average of the squares of a random variable. $E[X^2]$
     - **Unit Second Moment**: $E[X^2]=1$
+- **[Baseband](https://en.wikipedia.org/wiki/Baseband)**:  It is the range of frequencies occupied by a signal that has not been modulated to higher frequencies.
+    - Carry the most original data; typically originate from transducers, converting some other variable into an electrical signal.
+    - Frequency is usually very low, starting from zero.
+- **[Power Spectral Density(PSD)](https://en.wikipedia.org/wiki/Spectral_density)**: A physical quantity that describes how signal power is distributed at different frequencies.
+- **[Bandwidth](https://en.wikipedia.org/wiki/Bandwidth_(signal_processing))**: The range of frequencies contained within a signal
 
-## Pathloss
-- It is a quantity that measures the loss of signal strength (reduction in power, or attenuation) between a transmitter and receiver.
+## Pathloss & [Radio Map](https://en.wikipedia.org/wiki/Radio_map)
+- **Pathloss** is a quantity that measures the loss of signal strength (reduction in power, or attenuation) between a transmitter and receiver.
+- **Radio Map** is a spatial visualization of **Pathloss**, it is a function
+<span className="todo-red">TODO: Is my understanding of the relationship between Radio Map and Pathloss accurate?</span>
 
 <span id="gain_directivity"></span>
 ### [Antenna Gain/Directivity](https://en.wikipedia.org/wiki/Directivity)
@@ -24,7 +33,6 @@ title: Radio Background
 $$
 P_r(d) = \frac{P_t G_t G_r \lambda^2}{(4\pi)^2d^2L}
 $$
-
 Notation:
 - $d$: distance between the transmitter and receiver (in meters)
 - $G_t$/$G_r$: transmit/receiver gain, related [link](#gain_directivity)
@@ -39,10 +47,32 @@ $$
 PL_F(d) = 10 \log (P_t/P_r) = -10 \log (\frac{G_t G_r\lambda^2}{(4\pi)^2d^2}) = -20 \log (\frac{\sqrt{G_t G_r} \lambda}{4\pi d})
 $$
 
+### Application Scenarios
+- [Device-to-device (D2D) link scheduling](#link-scheduling).
+- Station assignment / User-cell site association: Assign a set of wireless devices to a set of cellular base stations. [Related link](https://ieeexplore.ieee.org/abstract/document/7314981).
+- Fingerprint based localization: Locate device by matching signal characteristics.
+- Physical-layer security, power control in multi-cell massive MIMO systems, user pairing in MIMO-NOMA systems, precoding in multi-cell large scale antenna systems, path planning, and activity detection. 
+
 ## Gaussian Noise
 - When an electrical variation obeys a Gaussian distribution, it is called **Gaussian noise**, or Random Noise.
 - Its mean is 0 and its variance is constant.
 - It can be used to simulate real-word random interference
+
+### Gaussian Interference Channel
+- Theoretical interference channel model for communication .
+- Two point-to-point communications occur over a shared medium in the same time.
+- Interference exists during communication.
+- Currently, no optimal encoding method has been found to achieve its maximum transmission limit (capacity region)
+    - [Link scheduling](#link-scheduling) is currently the best practice.
+- It yields very good performance in comparison with classical interference avoidance schemes such as CSMA
+    - [Carrier Sense Multiple Access(CSMA)](https://en.wikipedia.org/wiki/Carrier-sense_multiple_access): Node will verifie the absence of other traffic before transmitting on a shared transmission medium
+
+#### Link Scheduling
+- Scheduling subsets of links: From all links that want to communicate, select a group of links that have less interference to make them work at the same time and frequency.
+- Treat this sufficiently weak interference as [Gaussian Noise](#gaussian-noise).
+- In a particular regime of weak interference, **Treating Interference as Noise (TIN)** is information-theoretic approximately optimal.
+- [**FlashLinQ**](https://ieeexplore.ieee.org/abstract/document/6544312): A practical such link scheduling algorithm developed by Qualcomm
+    - Some information-theoretic inspired D2D link scheduling algorithms, which significantly improve upon FlashLinQ: [ITLinQ](https://ieeexplore.ieee.org/abstract/document/6824745) and [ITLinQ+](https://ieeexplore.ieee.org/abstract/document/7486985)
 
 ## Cellular Radio
 In a cellular radio system, the area to be covered is divided up into a number of small areas called cells, with one radio base station positioned to give radio coverage of each cell
@@ -51,14 +81,51 @@ In a cellular radio system, the area to be covered is divided up into a number o
 - **Handoff / Handover**: when moving across cells, the base station will switch seamlessly.
 - **Cell Splitting**: when the number of users in a cell is too high, causing the base station to be unable to provide sufficient service, this cell can be divided into several smaller cells with more base stations.
 
-## Signal Noise Ration (SNR)
+## [Signal-to-Noise Ration (SNR)](https://en.wikipedia.org/wiki/Signal-to-noise_ratio)
+It is a measure used in science and engineering that compares the level of a desired signal to the level of background noise.
+
+It is the ratio of signal power to noise power:
+$$
+SNR = \frac{G(x,y)P_{T_{x}}}{N_0 W}
+$$
+Notation:
+- $G(x,y)$: Pathloss function / Radio map, it represents large-scale signal attenuation
+- $P_{T_x}$: Transmit power, the total energy of the signal when it is emitted.
+- $N_0$: [Power spectral density](#basic-concepts) of additive noise.
+- $W$: [Signal bandwidth](#basic-concepts)
 
 ### Baseband Equivalent Channel Model
+This model ignores extremely high-frequency carrier waves (consider it would result in an extremely large amount of computation), and directly analyze signal loss and interference at the low-frequency digital signal level ([baseband](#basic-concepts)). 
 
-<span className="todo-red">TODO</span>
-
-It can also be called "Fading Channel Model" or "Fading Channel with AWGN(Additive White Gaussian Noise)".
+It compress the complex radio frequency propagation process into a single mathematical coefficient that directly affects the original/baseband data.
+It can also be called "Fading Channel Model", because it includes $G(x,y)$ (large-scale decay) and $H$ (small-scale decay).
+It can also be called "Fading Channel with AWGN(Additive White Gaussian Noise)", because it finally added $Z$ (additive noise).
 
 $$
 Y = \sqrt{G(x, y)} H X + Z
 $$
+Notation:
+- **$Y$**: Received signal sample
+- **$G(x, y)$**: Pathloss function / Radio map, it represents large-scale signal attenuation
+- **$H$**: Normalized small-scale fading
+    - **Normalized**: $E[|H|^2]=1$
+- **$X$**: Transmitted signal sample
+- **$Z$**: Additive noise
+
+### Received Energy per Sample
+The following formula describes the average energy per sample of the received signal. 
+It is a physical quantity derived from the baseband equivalent channel model.
+It is used to measure the total average strength of the signal and noise.
+
+$$
+E[|Y|^2] = G(x, y)P_{T_x}/W +N_0
+$$
+Notation:
+- $G(x, y)P_{T_x}/W$: singal part
+    - $G(x, y)$: pathloss function / radio map, it represents large-scale signal attenuation
+    - $P_{T_x}$: transmit power, the total energy of the signal when it is emitted.
+- $N_0$: noise part; [power spectral density](#basic-concepts) of additive noise.
+
+It is derived based on this [formula](#baseband-equivalent-channel-model):
+- Since $E[|H|^2]=1$, $H$ is eliminated during the averaging process.
+- Since $X$ and $Z$ are independent, the cross term is 0.

@@ -53,11 +53,14 @@ export default function Home(): ReactNode {
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                  <Link to="/docs/radiobackground#basic-concepts" style={{fontSize: '0.9rem', color: 'gray'}}>
-                    1. What is "Wavefront"?
+                  <Link to="/docs/radiobackground" style={{fontSize: '0.9rem', color: 'gray'}}>
+                    1. Current progress: I-B Radio Map Prediction in RadioUnet orginal paper and sum the background knowledge
                   </Link>
-                  <Link to="/docs/radiobackground#baseband-equivalent-channel-model" style={{fontSize: '0.9rem', color: 'gray'}}>
-                    2. Current progress.
+                  <Link to="/docs/radiobackground#basic-concepts" style={{fontSize: '0.9rem', color: 'gray'}}>
+                    2. What is "Wavefront"?
+                  </Link>
+                  <Link to="/docs/radiobackground#pathloss--radio-map" style={{fontSize: '0.9rem', color: 'gray'}}>
+                    3. Is my understanding of the relationship between Radio Map and Pathloss accurate?
                   </Link>
                 </div>
             </div>
