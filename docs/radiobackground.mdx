@@ -18,6 +18,7 @@ title: Radio Background
     - Frequency is usually very low, starting from zero.
 - **[Power Spectral Density(PSD)](https://en.wikipedia.org/wiki/Spectral_density)**: A physical quantity that describes how signal power is distributed at different frequencies.
 - **[Bandwidth](https://en.wikipedia.org/wiki/Bandwidth_(signal_processing))**: The range of frequencies contained within a signal
+- **[Delay Spread](https://en.wikipedia.org/wiki/Delay_spread)**: The time difference between the first arriving signal and the last arriving signal.
 
 ## Pathloss & [Radio Map](https://en.wikipedia.org/wiki/Radio_map)
 - **Pathloss** is a quantity that measures the loss of signal strength (reduction in power, or attenuation) between a transmitter and receiver.
@@ -52,6 +53,95 @@ $$
 - Station assignment / User-cell site association: Assign a set of wireless devices to a set of cellular base stations. [Related link](https://ieeexplore.ieee.org/abstract/document/7314981).
 - Fingerprint based localization: Locate device by matching signal characteristics.
 - Physical-layer security, power control in multi-cell massive MIMO systems, user pairing in MIMO-NOMA systems, precoding in multi-cell large scale antenna systems, path planning, and activity detection. 
+
+## Pathloss Prediction Methods
+There are two main categories of methods for Pathloss Function/Radio Map Prediction: data-driven interpolation and model-based data fitting. 
+We will introduce some representative methods below.
+
+### [Kriging](https://en.wikipedia.org/wiki/Kriging)
+- It is a **data-driven interpolation** method.
+- It uses measured values from known points to predict signal strength at unmeasured points through mathematical algorithms.
+- Assuming that points with closer geographical locations have more similar signal characteristics.
+- It strives to be a BLUE (Best Linear Unbiased Estimator) method.
+    - Best: To minimize variance, the results will be more stable, with less fluctuation in deviation from the true value.
+    - Linear: Linear combination of the original observation data.
+    - Unbaised: The expected value (average) of the estimated value equals the true value.
+
+### [Radial Basis Function (RBF)](https://en.wikipedia.org/wiki/Radial_basis_function) Interpolation
+- It is a **data-driven interpolation** method.
+- **Radial** means the value depends only on the distance from the center. **Basis Function** is a set of simple, predefined mathematical functions.
+- Prediction result is a linear combination of the basis functions.
+
+$$
+f(y) = \sum_{i=1}^{k} w_i \cdot \phi(\|y - x_i\|)
+$$
+Notation:
+$y$: Location of target point.
+$x_i$: Location of the $i$-th measurement point.
+$w_i$: Corresponding weight coefficients.
+$\phi$: A radial basis function.
+
+### [Tomograph](https://en.wikipedia.org/wiki/Tomography) Methods
+- It is a **model-based data fitting** method.
+- It treats the **Spatial Loss Field (SLF)** as a blocking factor and calculates the degree of signal weakening by measuring the set of blocking factors along the path from transmitter to receiver.
+    - **Spatial Loss Field (SLF)**: A function describing the signal blocking capability of each point in space.
+    - **SLF** can be calculated in reverse by measuring the total attenuation between many transmitter-receiver pairs.
+- **Low-rank structure** assumption: Spatial attenuation distribution has some repetition or regularity.
+    - Rank represents the number of independent pieces of information contained in the matrix.
+    - **Low rank** implies strong correlation or similarity among many rows or columns of a matrix, allowing for the reconstruction of the entire matrix with very little known data.
+- **Sparsity** assumption: Only a few places (such as buildings) will create significant blockings, most areas are empty (0).
+- **Piecewise homogeneity** assumption: SLF values within the same area should be the same or similar, such as the values within the same building are homogeneous.
+- Transmission is taken into account, while (diffraction)[#basic-concepts], reflection and scatter are ignored.
+
+### [Ray-tracing](https://en.wikipedia.org/wiki/Ray_tracing_(physics))
+- It is a **model-based data fitting** method.
+- Assuming the radio wave frequency is high enough (the wavelength is much smaller than the size of the obstacle), the propagation of radio waves can be treated as the propagation of light.
+- Calculate the reflection, [diffraction](#basic-concepts), transmission, and scattering that the rays undergo from the transmitter to the receiver.
+- High accuracy, no measurement data or pre-training required.
+- Slow calculation
+
+#### Intelligent Ray Tracing (IRT)
+- Use preprocessing to accelerate computation, see details in section `B. 3D Ray-optical model based on preprocessing` of [this article](https://ieeexplore.ieee.org/abstract/document/1040665).
+    - building will be divided into several units according to some standards.
+        - Differences in interaction types: If a unit interacts differently with a ray, it must be further subdivided.
+        - Approximately constant: Ensure that all physical parameters remain nearly constant when different parts within a unit interact with the ray. 
+        - Visibility: Construct a visibility tree based on the visibility relationships between different units.
+        - <span className="todo-red">Nodes of a tree store physical parameters rather than actual values.</span>
+        - <span className="todo-red">Visibility here is a probability; different rays result in different visibility, therefore only a subset of branches will be activated and used.</span>
+- In real-time computation, only the top layer of the visibility tree needs to be recalculated; subsequent layers can use the pre-processed data. 
+- IRT[X]: Limit the interaction between the ray and the environment to [X] (such as, 2 or 4) times.
+    - Assuming that after [X] or more interactions, the intensity of the ray has been weakened to a negligible level.
+
+### [Dominant Path Model (DPM)](https://new.eurasip.org/Proceedings/Ext/IST05/papers/242.pdf)
+- It is a **model-based data fitting** method.
+- Focus on only one or a few dominant paths that play a decisive role in receiving energy.
+- Computational load is light.
+- By constructing a tree structure, the dominant path from transmitter to receiver can be found.
+    - The root node is the transmitter.
+    - Branches of the current node are **convex angles** or receivers within the current node's line of sight.
+        - **Convex angles**: Angles greater than 180°, e.g. building exterior corner.
+        - **Concave corner**: Angles less than 180°, e.g. building interior corner.
+        - When rays strike a concave corner, they are usually further blocked by the wall or reflected multiple times, making it difficult to form a "dominant path" that can bypass the building and carry a large amount of energy.
+- High robustness.
+- **Waveguide effect**: When radio waves propagate through environments like streets or pipeline, they gain energy due to continuous reflection from the walls of buildings on either side.
+
+Pathloss function:
+$$
+L=20\cdot log(\frac{4\pi}{\lambda}) + 20\cdot p\cdot log(d) + \sum_{i=0}^{n}\alpha(\varphi,i) - \frac{1}{c}\sum_{k=0}^{c}w_k
+$$
+Notation:
+- [Free space pathloss](#free-space-pathloss-fspl) $log(\frac{4\pi}{\lambda})$
+    - $\lambda$: wavelength
+- Distance attenuation $p\cdot log(d)$
+    - $p$: distance attenuation coefficient; dynamically adjust based on whether the current area is at line of sight or not at line of sight
+    - $d$: total length of the path
+- Interaction loss $\sum_{i=0}^{n}\alpha(\varphi,i)$
+    - $\alpha$: signal loss caused by a change in direction (such as diffraction)
+    - $\varphi$: turning angle
+    - $n$: total number of interactions 
+- [Waveguide effect](#dominant-path-model-dpm) $\frac{1}{c}\sum_{k=0}^{c}w_k$
+    - $w_k$: waveguiding factor; enhancement effect of waveguide effect
+    - $c$: total number of waveguide effect segments involved in the path
 
 ## Gaussian Noise
 - When an electrical variation obeys a Gaussian distribution, it is called **Gaussian noise**, or Random Noise.
