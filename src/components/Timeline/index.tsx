@@ -34,7 +34,7 @@ export function TimelineItem({
             </div>
 
             {item.detailName && item.detailPath && (
-                <div style={{ fontSize: '0.9em', marginTop: '2px' }}>
+                <div>
                   <strong>See details in: </strong>
                   <Link to={item.detailPath}>{item.detailName}</Link>
                 </div>
