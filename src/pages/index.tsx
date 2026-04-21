@@ -53,18 +53,21 @@ export default function Home(): ReactNode {
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                  <Link to="/docs/radiobackground" style={{fontSize: '0.9rem', color: 'gray'}}>
-                    1. Current progress: I-C Radio Map Prediction Using Deep Learning in RadioUnet orginal paper and sum the background knowledge
-                  </Link>
-                  <Link to="/docs/radiobackground#basic-concepts" style={{fontSize: '0.9rem', color: 'gray'}}>
+                  <span>
+                    1. Current progress: <span className='text-blue'>II. BACKGROUND AND PRELIMINARIES</span> in original paper
+                  </span>
+                  <Link to="/docs/radiobackground#basic-concepts" style={{color: 'gray'}}>
                     2. What is "Wavefront"?
                   </Link>
-                  <Link to="/docs/radiobackground#pathloss--radio-map" style={{fontSize: '0.9rem', color: 'gray'}}>
+                  <Link to="/docs/radiobackground#pathloss--radio-map" style={{color: 'gray'}}>
                     3. Is my understanding of the relationship between Radio Map and Pathloss accurate?
                   </Link>
-                  <Link to="/docs/radiobackground#intelligent-ray-tracing-irt" style={{fontSize: '0.9rem', color: 'gray'}}>
+                  <Link to="/docs/radiobackground#intelligent-ray-tracing-irt" style={{color: 'gray'}}>
                     4. Is my understanding of the IRT accurate?
                   </Link>
+                  <span>
+                    5. In the <strong>Pathloss Fingerprint Based Localization</strong> problem, is the location of the base station known?
+                  </span>
                 </div>
             </div>
           </div>
