@@ -2,41 +2,45 @@ import React, { ReactNode } from 'react';
 import Link from '@docusaurus/Link';
 import styles from './styles.module.css';
 
-interface TimelineItemProps {
-  date: string;
-  title: string;
-  children: ReactNode;
+interface TimelineDetail {
+  text: ReactNode;
   detailName?: string;
   detailPath?: string;
 }
+
+interface TimelineItemProps {
+  date: string;
+  items: TimelineDetail[];
+}
+
 export default function Timeline({ children }: { children: ReactNode }) {
   return <div className={styles.timelineContainer}>{children}</div>;
 }
 
 export function TimelineItem({ 
     date, 
-    title, 
-    children,
-    detailName, 
-    detailPath 
+    items
 }: TimelineItemProps) {
 
   return (
     <div className={styles.timelineItem}>
       <div className={styles.timelineDate}>{date}</div>
       <div className={styles.timelineContent}>
-        <div>
+
+        {items.map((item, index) => (
+          <div key={index} style={{ marginBottom: index === items.length - 1 ? 0 : '12px' }}>
             <div className={styles.timelineMainRow}>
-                <strong>{title}: </strong> {children}
+               {item.text}
             </div>
 
-            {detailName && detailPath && (
-                <div>
-                <strong>See details in: </strong>
-                <Link to={detailPath}>{detailName}</Link>
+            {item.detailName && item.detailPath && (
+                <div style={{ fontSize: '0.9em', marginTop: '2px' }}>
+                  <strong>See details in: </strong>
+                  <Link to={item.detailPath}>{item.detailName}</Link>
                 </div>
             )}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );

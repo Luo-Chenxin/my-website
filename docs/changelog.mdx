@@ -8,19 +8,62 @@ sidebar_position: 1
 import Timeline, { TimelineItem } from '@site/src/components/Timeline';
 
 <Timeline>
-  <TimelineItem date="2026-04-20" title="Feat" detailName='Radio Background' detailPath='radiobackground'>
-    Add content about Radio Map Prediction Methods, in file `Radio Background`
-  </TimelineItem>
+  <TimelineItem 
+    date="2026-04-21" 
+    items={[
+      {
+        text: <><strong>Fix:</strong> Beacuse I find newer dateset version, I update contents of <span className='text-blue'>Reproduction Tips, RadioMapSeer</span></>,
+        detailName: 'RadioUnet',
+        detailPath: '/docs/radiounet#reproduction-tips'
+      },
 
-  <TimelineItem date="2026-04-17" title="Feat" detailName='Radio Background' detailPath='radiobackground'>
-    Add content about Baseband, Power Spectral Density, Bandwidth, Application Scenarios, Gaussian Interference Channel, Signal-to-Noise Ration Formula Derivation in file `Radio Background`
-  </TimelineItem>
+      {
+        text: <><strong>Feat:</strong> Update <code>Timeline</code> format to accommodate more items in one day</>
+      },
+    ]}
+  />
 
-  <TimelineItem date="2026-04-16" title="Feat" detailName='Radio Background' detailPath='radiobackground'>
-    Initialize file `Radio Background`, which have some concepts and formulas in physics background, especially in radio field. 
-  </TimelineItem>
+  <TimelineItem 
+    date="2026-04-20" 
+    items={[
+      {
+        text: <><strong>Feat:</strong> Add contents of <span className='text-blue'>Radio Map Prediction Methods</span></>,
+        detailName: 'Radio Background',
+        detailPath: '/docs/radiobackground'
+      }
+    ]}
+  />
   
-  <TimelineItem date="2026-04-15" title="Fix" detailName='RadioUnet' detailPath='radiounet#dataset_directories'>
-    Description issues for directories such as `difference`, `missing`, and `removed`.
-  </TimelineItem>
+  <TimelineItem 
+    date="2026-04-17" 
+    items={[
+      {
+        text: <><strong>Feat:</strong> Add contents of <span className='text-blue'>Baseband, Power Spectral Density, Bandwidth, Application Scenarios, Gaussian Interference Channel, Signal-to-Noise Ration Formula Derivation</span></>,
+        detailName: 'Radio Background',
+        detailPath: '/docs/radiobackground'
+      }
+    ]}
+  />
+
+  <TimelineItem 
+    date="2026-04-16" 
+    items={[
+      {
+        text: <><strong>Feat:</strong> Initialize file, which have concepts and formulas in physics background, especially in radio field</>,
+        detailName: 'Radio Background',
+        detailPath: '/docs/radiobackground'
+      }
+    ]}
+  />
+
+  <TimelineItem 
+    date="2026-04-15" 
+    items={[
+      {
+        text: <><strong>Fix:</strong> Description issues for directories such as <code>difference</code>, <code>missing</code>, and <code>removed</code></>,
+        detailName: 'RadioUnet',
+        detailPath: '/docs/radiounet#dataset_directories'
+      }
+    ]}
+  />
 </Timeline>
