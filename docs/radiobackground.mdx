@@ -17,12 +17,40 @@ title: Radio Background
     - Carry the most original data; typically originate from transducers, converting some other variable into an electrical signal.
     - Frequency is usually very low, starting from zero.
 - **[Power Spectral Density(PSD)](https://en.wikipedia.org/wiki/Spectral_density)**: A physical quantity that describes how signal power is distributed at different frequencies.
-- **[Bandwidth](https://en.wikipedia.org/wiki/Bandwidth_(signal_processing))**: The range of frequencies contained within a signal
+- **[Bandwidth](https://en.wikipedia.org/wiki/Bandwidth_(signal_processing))**: The range of frequencies contained within a signal. The unit is Hertz (Hz).
 - **[Delay Spread](https://en.wikipedia.org/wiki/Delay_spread)**: The time difference between the first arriving signal and the last arriving signal.
 - **Spectrum**: A spectrum of radio arranged continuously by frequency or wavelength.
     - **Spectrum Map**: The distribution of signal strength in geographic space within a specific frequency.
     - **Spectrum Map Interpolation**: Estimate the occupancy and signal strength of a map at a specific frequency using a small number of measurement points.
 - **Shadowing Effect**: When a signal encounters an obstacle, it is blocked or absorbed, resulting in a significant decrease in signal strength behind the obstacle.
+
+## Degrees of Freedom (DoF)
+- The number of independent parallel data streams that a channel can carry, under the **high SNR** limit.
+    - **High SNR**: The transmission power approaches infinity, or the ambient noise approaches zero.
+    - High SNR means the signal is mainly affected by interference, while a low SNR means the signal is mainly affected by noise.
+
+### Shannon Formula
+- **Channel Capacity**: the maximum theoretical rate without errors in a noisy communication channel
+    - The unit of channel capacity is bits per second (bps).
+
+<div style={{ margin: '3rem 0' }} />
+
+$$
+C = W \log_2 (1 + SNR)
+$$
+Notation:
+- $C$: channel capacity
+- $W$: [bandwidth](#basic-concepts)
+- $SNR$: [signal-to-noise ratio](#signal-to-noise-ration-snr)
+
+<div style={{ margin: '3rem 0' }} />
+
+- In High SNR environment, **Shannon Formula** has an approximate form: $C \approx W \log_2(SNR)$
+    - Channel capacity is linearly proportional to the signal strength in dB.
+
+
+### Generalized Degrees of Freedom (GDoF)
+- Related Paper: <em>[On the Optimality of Treating Interference as Noise](https://ieeexplore.ieee.org/abstract/document/7051266)</em>
 
 ## Pathloss & [Radio Map](https://en.wikipedia.org/wiki/Radio_map)
 - **Pathloss** is a quantity that measures the loss of signal strength (reduction in power, or attenuation) between a transmitter and receiver.
@@ -188,6 +216,7 @@ Notation:
 - $P_{T_x}$: Transmit power, the total energy of the signal when it is emitted.
 - $N_0$: [Power spectral density](#basic-concepts) of additive noise.
 - $W$: [Signal bandwidth](#basic-concepts)
+- $frac{P_{T_x}}{W}$: [Power spectral density ](#basic-concepts) of singal.
 
 ### Baseband Equivalent Channel Model
 This model ignores extremely high-frequency carrier waves (consider it would result in an extremely large amount of computation), and directly analyze signal loss and interference at the low-frequency digital signal level ([baseband](#basic-concepts)). 
