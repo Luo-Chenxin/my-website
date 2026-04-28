@@ -69,6 +69,35 @@ When decreasing resolution/downsampling, the resolution is halved using MaxPool,
 When Increasing resolution/upsampling, the resolution is halved using ConvolutinalTranspose. The following tool can quickly calculate the kernel and padding values ​​of the convolutional layer to ensure that the resolution doubles.
 <KPCalc logic="convT"/>
 
+## Method Details
+- **Unit of Pathloss**: Related to [GDoF theory](/docs/radiobackground#generalized-degrees-of-freedom-gdof), the pathloss function should be estimated in logarithmic scale (in dB).
+- **Rationale for truncation**: Related to [GDoF theory](/docs/radiobackground#generalized-degrees-of-freedom-gdof), when the noise is much stronger than the signal, predicting the path loss is meaningless. 
+  - In order to maintain the normality of the data network input size, we will choose to truncate it (i.e., truncate it to 0 no matter how small it is).
+- **Curriculum Learning**: This is a training strategy that simulates the human education process. By breaking down complex tasks from easy to difficult, it guides the neural network to gradually master the core principles.
+- We set Noise Figure equals 0 to focus on environment noises/interferences.
+
+### Pathloss Threshold
+If the signal loss during propagation exceeds the **pathloss threshold**, the signal will be completely submerged in noise, and the receiver will be unable to detect it.
+
+$\mathbf{P_{L, thr}}$ **Calculation**:
+1. At room temperature, the inherent noise ([thermal noise(/docs/radiobackground#basic-concepts)]) is -174 dBm/Hz.
+2. According to system bandwidth, which is $10 MHz$ ($10^7 Hz$), we get thermal noise in dB level is $10 \log_{10}(10^7) + (-174) = 70 - 174 = -104 dBm$
+3. We set noise figure equals 0, so the total noise floor is $-104 + 0 = -104 dBm$ 
+4. We set transmitter power is 23dBm, and we know the pathloss threshold is the pathloss value which reduces receiver power to just equal to noise floor.
+5. $-104 dBm = 23 dBm + P_{L, thr}$, after rearranging the terms, we get $P_{L, thr} = -104 dBm - 23 dBm = \mathbf{-127} dB$
+
+### Pathloss Truncation
+- It is a man-made pathloss baseline., and it is also called as *analytic noise floor*
+- It is lower than Pathloss Threshold
+- Neural networks learn through gradients. If we cut off the pathloss threshold abruptly, the edge will becomes very abrupt. 
+By preserving a segment of data below the path loss threshold, AI can observe the trend of signal attenuation, thus gaining a deeper understanding of the changing path loss
+
+$\mathbf{P_{L, trnc}}$ **Calculation**:
+1. We already know the maximum pathloss of dataset is -47.84dB
+2. We use $Max - P_{L, thr} = 4(PL,thr - P_{L, trnc})$ to calculate 
+3. After rearranging the terms, we get $P_{L, trnc} = PL,thr - \frac{Max - P_{L, thr}}{4}$
+4. $P_{L, trnc} = -127 - \frac{-47.84 + 127}{4} = -127 - \frac{79.16}{4} = -127 - 19.79 = 146.79 \approx \mathbf{147} dB$
+
 ## Reproduction Tips
 - The `s.environ["CUDA_VISIBLE_DEVICES"]="0"` label must match the label of the graphics card in the current environment. In a Linux environment, we can use "nvidia-smi" to check the NVIDIA graphics card.
 - Recommend to change `torch.set_default_tensor_type('torch.cuda.FloatTensor')` to `torch.set_default_tensor_type('torch.FloatTensor')` to avoid device incompatibility issues.

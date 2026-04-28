@@ -53,8 +53,8 @@ export default function Home(): ReactNode {
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                  <Link to="/docs/radiobackground#generalized-degrees-of-freedom-gdof" style={{color: 'gray'}}>
-                    1. Current progress: Understand GDoF and its formula in <em>On the Optimality of Treating Interference as Noise</em>
+                  <Link to="/docs/radiounet#method-details" style={{color: 'gray'}}>
+                    1. Current progress: Complete methods of radiounet
                   </Link>
                   <Link to="/docs/radiobackground#basic-concepts" style={{color: 'gray'}}>
                     2. What is "Wavefront"?
