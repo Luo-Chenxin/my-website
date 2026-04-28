@@ -7,6 +7,7 @@ title: Radio Background
 - **Scattering**: When an radio frequence wave encounters an obstacle, it will scatter into multiple waves.
 - **Additive Noise**: Noise is introduced to the signal of interest via addition.
 - **Decibel(dB)**: Decibel is a logarithmic unit that expresses the ratio of two physical quantities of the **same** unit. It is often used to measure the relative magnitude of sound intensity or electrical signal power.
+    - Decibel-milliwatts(dBm): It is a logarithmic unit that expresses the absolute magnitude of power, with **1 mW (milliwatt)** as the reference value.
 - **Large-scale signal attenuation**: Signal loss during long-distance propagation; large scale means it focuses on the macroscopic changes in signal with distance/terrain...
 - **Small-scale fading**: Severe fluctuations in received signal strength over extremely short distances (wavelength levels) or over extremely short periods of time.
     - It originates from the superposition of scattered wavefronts. When a signal is emitted from a base station, it reaches receiver via different paths. Because the length of each path is different, the **phase** of the arriving signal is also different.
@@ -56,6 +57,48 @@ Traditional DoF theory has a fatal flaw: it assumes that all interferences have 
 GDoF introduces the channel strength index **$\alpha$**. This allows interfering signals to grow at **different** rates.
 
 **GDoF**: Considering the complex situation of varying interference strength, the number of effective information channels.
+    - $GDoF = 1$: the user is completely unaffected by interference and enjoys 100% transmission efficiency.
+    - $GDoF = \frac{1}{2}$: due to interference, the user's effective bandwidth was cut in half.
+
+**Symmetric GDoF**: In a multi-user network, each user receives the exact same transfer rate (GDoF).
+
+<figure style={{ textAlign: 'center' }}>
+  <img 
+    src="/img/radiobackground/GDoF_w_curve.png" 
+    alt="GDoF &quot;W&quot; curve" 
+    style={{ maxWidth: '100%', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} 
+  />
+
+  <figcaption style={{ marginTop: '1rem', textAlign: 'left', display: 'inline-block', maxWidth: '80%' }}>
+    <strong>Fig. 1. The GDoF "W" curve for the two-user symmetric Gaussian interference channel.</strong>
+    <p style={{ margin: '0.5rem 0', color: 'var(--ifm-color-emphasis-700)' }}>
+      This curve depicts how GDoF fluctuates with the interference strength exponent ($\alpha$) in a two-user interference channel.
+    </p>
+    <ul style={{ paddingLeft: '1.5rem' }}>
+      <li><strong>$\alpha = 0$:</strong> At this point, there is absolutely no interference, the user has dedicated bandwidth, and GDoF is 1.</li>
+      <li><strong>$0 < \alpha \le 0.5$:</strong> For every slight increase in interference, the effective rate decreases linearly by a slight decrease; within this interval, TIN is the optimal solution.</li>
+      <li><strong>$\alpha = 0.5$:</strong> The interference was strong enough to block communication, but weak enough to be effectively decoded, causing the GDoF to drop to 0.5.</li>
+      <li><strong>$0.5 < \alpha < 2$:</strong> As interference intensifies, the receiver can effectively extract interference information and thus eliminate it.</li>
+      <li><strong>$\alpha \ge 2$:</strong> The receiver can completely decode and eliminate the interference, and the GDoF returns to 1, as if returning to an interference-free state.</li>
+    </ul>
+  </figcaption>
+</figure>
+
+Under the GDoF model, we have the following mathematical model of signal transmission:
+
+$$
+Y_j = \sum_{i=1}^{K} \sqrt{P^{\alpha_{i,j}}} X_i + Z_j,
+$$
+Notation:
+- $i$: Transmitter Index, from 1 to K
+- $j$: Receiver Index
+- $Y_j$: The signal strength received by the $j$-th receiver
+- $P$: Reference power scale tending towards infinity, 
+- $\alpha_{i,j}$: Channel strength index; Describe how the path gain from transmitter $i$ to receiver $j$ scales with $P$
+- $X_i$: The original signal strength transmitted by the $i$-th transmitter
+- $Z_j$: Noise strength
+
+We can consider $P^{\alpha_{i,j}}$ in the formula as a weight parameter in a neural network, which demonstrates the rationale for using neural networks to predict radio map.
 
 ## Pathloss & [Radio Map](https://en.wikipedia.org/wiki/Radio_map)
 - **Pathloss** is a quantity that measures the loss of signal strength (reduction in power, or attenuation) between a transmitter and receiver.
