@@ -24,7 +24,7 @@ RadioUnet exhibits two U-shaped structures, as shown below
 
 ### Main Convolutional Blocks
 
-The model uses several different convolutional blocks; three representative blocks are given as examples here.
+The model uses several different convolutional blocks; 4 representative blocks are given as examples here.
 
 We assume the input channels are 2 (build + transmitter).
 
@@ -96,7 +96,32 @@ $\mathbf{P_{L, trnc}}$ **Calculation**:
 1. We already know the maximum pathloss of dataset is -47.84dB
 2. We use $Max - P_{L, thr} = 4(PL,thr - P_{L, trnc})$ to calculate 
 3. After rearranging the terms, we get $P_{L, trnc} = PL,thr - \frac{Max - P_{L, thr}}{4}$
-4. $P_{L, trnc} = -127 - \frac{-47.84 + 127}{4} = -127 - \frac{79.16}{4} = -127 - 19.79 = 146.79 \approx \mathbf{147} dB$
+4. $P_{L, trnc} = -127 - \frac{-47.84 + 127}{4} = -127 - \frac{79.16}{4} = -127 - 19.79 = -146.79 \approx \mathbf{-147} dB$
+
+### Normalization
+- We need normalization to ensure that when calculating the model's loss, even the weaker signal parts can sufficiently influence the model's training direction.
+  - The weaker signals are often found at building edges, shadows, and other critical areas.
+  - The model needs to fully learn the patterns of change in these areas.
+- Normalization/Mapping (Scaling and truncation) formula:
+  $$
+  f(x_n) = max\{\frac{P_L(x_n) - P_{L, trnc}}{M_1 - P_{L, trnc}}, 0\}
+  $$
+  Notion:
+  - $P_L(x_n)$: pathloss value at $x_n$ location
+  - $P_{L, trnc}$: [pathloss truncation](#pathloss-truncation)
+  - $M_1$: the maximal pathloss in all radio maps
+- Normalized Mean Square Error (NMSE) is used as loss during model training.
+  $$
+  E = \frac{\sum_n|\tilde{f}(x_n) - f(x_n)|^2}{\sum_n|f(x_n)|^2}
+  $$
+  Notion:
+  - $f(x_n)$: normalized pathloss value at $x_n$ location
+  - $\tilde{f}(x_n)$: approximation of $f(x_n)$
+- Root Mean Square Error (RMSE) can be used with predicted pathloss to obtain the maximal receiver rate $R$ for a given guaranteed block error probability at any location of the map.
+  $$
+  E = \sqrt{\sum_n|\tilde{P_L}(x_n) - P_L(x_n)|^2}
+  $$
+
 
 ## Reproduction Tips
 - The `s.environ["CUDA_VISIBLE_DEVICES"]="0"` label must match the label of the graphics card in the current environment. In a Linux environment, we can use "nvidia-smi" to check the NVIDIA graphics card.

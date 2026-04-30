@@ -53,9 +53,9 @@ export default function Home(): ReactNode {
                     alignItems: 'center',
                     gap: '8px'
                   }}>
-                  <Link to="/docs/radiounet#method-details" style={{color: 'gray'}}>
-                    1. Current progress: Complete methods of radiounet
-                  </Link>
+                  <span>
+                    1. Current progress: I'm now forcused on coding works related to model-training framframework.
+                  </span>
                   <Link to="/docs/radiobackground#basic-concepts" style={{color: 'gray'}}>
                     2. What is "Wavefront"?
                   </Link>
